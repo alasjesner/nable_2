@@ -8,8 +8,9 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
 
     <application
         android:allowBackup="true"
@@ -42,7 +43,22 @@
             android:name=".PhotoIntentActivity"
             android:exported="true" />
         <activity android:name=".CameraView" />
-        <activity android:name=".CaptureCameraImage" android:exported="true"></activity>
+        <activity
+            android:name=".CaptureCameraImage"
+            android:exported="true" />
+
+        <service android:name=".MessageRec">
+            <intent-filter>
+                <action android:name="com.google.Firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".FirebaseIDService">
+            <intent-filter>
+                <action android:name="com.google.Firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".SendMessage" android:exported="true"></activity>
     </application>
 
 </manifest>

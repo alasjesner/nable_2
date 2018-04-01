@@ -13,19 +13,28 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends Activity implements TextToSpeech.OnInitListener{
 
     private TextView txtSpeechInput;
     private ImageButton btnSpeak;
+    private Button fetchButton;
     private final int REQ_CODE_SPEECH_INPUT = 100;
     public static int cameraID = 0;
     public static ImageView image;
     private TextToSpeech tts;
+    DatabaseReference rootRef,demoRef;
+    String text = "Processing your request.";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,16 +44,38 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         txtSpeechInput = (TextView) findViewById(R.id.txtSpeechInput);
         btnSpeak = (ImageButton) findViewById(R.id.btnSpeak);
         image = (ImageView) findViewById(R.id.imgView);
+        fetchButton = (Button) findViewById(R.id.fetchMainPage);
 
         // hide the action bar
         //getActionBar().hide();
         tts = new TextToSpeech(this, this);
+        rootRef = FirebaseDatabase.getInstance().getReference();
+        //database reference pointing to demo node
+        demoRef = rootRef.child("demo");
 
         btnSpeak.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 promptSpeechInput();
+            }
+        });
+        //fetchButton.setOnClickListener(v);
+        fetchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                demoRef.child("value").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String value = dataSnapshot.getValue(String.class);
+                        text = value;
+                        //demoValue.setText(value);
+                        speakOut();
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
             }
         });
 
@@ -111,6 +142,12 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         super.onDestroy();
     }
 
+    public void fetchResult(View fetchButton)
+    {
+        SendMessage sendMessage=new SendMessage();
+        text = sendMessage.getFetchedText();
+        speakOut();
+    }
     @Override
     public void onInit(int status) {
 
@@ -123,7 +160,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                 Log.e("TTS", "This Language is not supported");
             } else {
                 btnSpeak.setEnabled(true);
-                //speakOut();
             }
 
         } else {
@@ -136,7 +172,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     void speakOut() {
 
         //String text = txtText.getText().toString();
-        String text = "Processing your request";
+        //String text = "Processing your request";
 
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
