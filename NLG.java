@@ -1,10 +1,10 @@
-
 package nlg;
 
 /**
  *
  * @author chandrani96
  */
+
 import simplenlg.framework.*;
 import simplenlg.lexicon.*;
 import simplenlg.realiser.english.*;
@@ -13,21 +13,22 @@ import simplenlg.features.*;
 import java.io.File;
 import java.util.Scanner;
 import java.util.StringTokenizer;
-public class NLG {
+public class nlg {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args)throws Exception {
         //String DB_FILENAME = "/home/chandrani96/NetBeansProjects/NLG/src/lexAccess2016lite/data/HSqlDb/lexAccess2016.data";
         //Lexicon lexicon = Lexicon.NIHDBLexicon(DB_FILENAME);
+    	
+    	//number of elements to consider
         int no_of_elements_seen=6;
+        
+        
         Lexicon lexicon = Lexicon.getDefaultLexicon();
         NLGFactory nlgFactory = new NLGFactory(lexicon);
         Realiser realiser = new Realiser(lexicon);
         
         
-        File file =new File("/home/chandrani96/NetBeansProjects/NLG/output.txt");
+        File file =new File("/home/kira/work/output.txt");
         Scanner sc = new Scanner(file);
         String entity[]=new String[no_of_elements_seen];
         for (int i=0; i<no_of_elements_seen && sc.hasNextLine(); i++)
@@ -35,9 +36,10 @@ public class NLG {
             entity[i]=sc.nextLine();   
             
         }
-        String new_entity[]=new String[no_of_elements_seen];
         
-        int pos=-1;
+        /*
+      //  String new_entity[]=new String[no_of_elements_seen];
+        //int pos=-1;
        
         for(int i=0; i<no_of_elements_seen; i++)
        {
@@ -45,6 +47,12 @@ public class NLG {
            String rep_elements[]=new String[no_of_elements_seen];
            String repeat="";
        }
+        */
+        
+        
+        
+        
+        
        /*    for(int j=i+1; j<i; j++)
            {
                if(entity[j].indexOf(entity[i])!=-1 && repeat.compareTo("")==0) //hence e(i) present in e(j)
@@ -110,7 +118,7 @@ public class NLG {
         {
             StringTokenizer st1 = new StringTokenizer(t1," ");
             StringTokenizer st2 = new StringTokenizer(t2," ");
-            int no_of_tokens=st1.countTokens();	
+        ///    int no_of_tokens=st1.countTokens();	
             int c=0;
             while (st1.hasMoreTokens()) {  
             if(st1.nextToken().compareTo(st2.nextToken())!=0);
@@ -129,11 +137,11 @@ public class NLG {
    //sentence 1 is sentence with nouns
     SPhraseSpec sentence1 = nlgFactory.createClause();
     sentence1.setSubject("I");
-    sentence1.setVerb("can see");
+    sentence1.setVerb("am  seeing");
     //for nouns, in for loop, add obj.addCoordinate(entity[i]);
     for(int i=0; i<no_of_nouns; i++)
     {
-        obj.addCoordinate(nouns[i]);
+        obj.addCoordinate("a "+ nouns[i]);
     }
 
     sentence1.setObject(obj);
@@ -164,7 +172,7 @@ public class NLG {
     sentpart.setSubject("someone");
     sentpart.setVerb(verbs[i]);
     sentpart.setFeature(Feature.PROGRESSIVE, true);
-    sentpart2.addComplement(sentpart2);
+    sentpart2.addComplement(sentpart);
     }
     
     
@@ -182,7 +190,7 @@ public class NLG {
     String output2 = realiser.realiseSentence(sentence2);  //Realiser created earlier
     System.out.println(output2);
     
-    
+    sc.close();
     
 }
 }
